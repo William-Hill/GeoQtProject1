@@ -14,9 +14,12 @@ class ProjectWidget : public QWidget
 public:
     explicit ProjectWidget(QWidget *parent = 0);
     ~ProjectWidget();
+    void selectMapSource(const QString &name);
+
     
 private:
     Ui::ProjectWidget *ui;
+    QString mapsname;
 };
 
 #endif // PROJECTWIDGET_H

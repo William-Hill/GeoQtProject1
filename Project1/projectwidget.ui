@@ -1,20 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ProjectWidget</class>
- <widget class="QWidget" name="ProjectWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="ProjectWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>759</width>
+    <height>578</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>ProjectWidget</string>
   </property>
+  <widget class="GeoQt::MapWidget" name="map_widget">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>170</y>
+     <width>616</width>
+     <height>391</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GeoQt::MapWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>MapWidget</header>
+   <slots>
+    <signal>mapCenterChanged(QPointF)</signal>
+    <signal>zoomLevelChanged(int)</signal>
+    <slot>setMapCenter(QPointF)</slot>
+    <slot>setZoomLevel(int)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

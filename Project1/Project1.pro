@@ -4,15 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
 
-TARGET = Project1
 TEMPLATE = app
 
+DESTDIR = ../dist
+INCLUDEPATH = ../src
+LIBS += -L \
+    ../dist \
+    -l \
+    geoqt
 
-SOURCES += main.cpp\
+
+SOURCES = main.cpp\
         projectwidget.cpp
 
-HEADERS  += projectwidget.h
+HEADERS  = projectwidget.h
 
 FORMS    += projectwidget.ui
