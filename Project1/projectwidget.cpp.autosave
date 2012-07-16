@@ -1,0 +1,17 @@
+#include "projectwidget.h"
+#include "ui_projectwidget.h"
+
+#include <MapSourceInterface>
+#include <BalloonMarker>
+
+ProjectWidget::ProjectWidget(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::ProjectWidget)
+{
+    ui->setupUi(this);
+}
+
+ProjectWidget::~ProjectWidget()
+{
+    delete ui;
+}
