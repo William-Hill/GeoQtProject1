@@ -16,11 +16,24 @@
   <widget class="GeoQt::MapWidget" name="map_widget">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>170</y>
-     <width>616</width>
-     <height>391</height>
+     <x>5</x>
+     <y>140</y>
+     <width>751</width>
+     <height>431</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>10</y>
+     <width>121</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Project 1 Map</string>
    </property>
   </widget>
  </widget>

@@ -16,10 +16,13 @@ public:
     ~ProjectWidget();
     void selectMapSource(const QString &name);
 
+
     
 private:
     Ui::ProjectWidget *ui;
     QString mapsname;
+    QStringList mapsAvailable;
+
 };
 
 #endif // PROJECTWIDGET_H
