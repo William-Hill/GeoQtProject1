@@ -178,11 +178,11 @@ void MapWidget::addMarker(AbstractMarker *marker)       //adds a marker to the m
     marker->setCursor(Qt::PointingHandCursor);                  //Sets the cursor to become a pointing hand when the marker is moused over
 }
 
-QStringList MapWidget::avaiableMapSources()  //Populates a QComboBox with a list of available map sources
+QStringList MapWidget::avaiableMapSources()  //Creates a list with a list of available map sources
 {
-	if (map_source_interfaces()->isEmpty()) {
-		QDir map_sources_path = QDir("mapsources");
-		foreach (const QString &file_name, map_sources_path.entryList(QDir::Files)) {
+    if (map_source_interfaces()->isEmpty()) {   // if the QList map_source_interfaces is empty
+        QDir map_sources_path = QDir("mapsources"); // Use QDir to gain access to the mapsources directory
+        foreach (const QString &file_name, map_sources_path.entryList(QDir::Files)) {  // gets the name of each file in the directory
 			QPluginLoader loader(map_sources_path.absoluteFilePath(file_name));
 			MapSourceInterface *plugin = qobject_cast<MapSourceInterface *>(loader.instance());
 			if (plugin)
@@ -197,11 +197,11 @@ QStringList MapWidget::avaiableMapSources()  //Populates a QComboBox with a list
 
 MapSourceInterface *MapWidget::mapSourceFactory(const QString &name)
 {
-	if (map_source_interfaces()->isEmpty())
+    if (map_source_interfaces()->isEmpty())  // Checks the QList map_source_interfaces to see if empty; basically if there are map sources available
 		return 0;
 
-	foreach(MapSourceInterface *map_source, *map_source_interfaces()) {
-		if (map_source->name() == name)
+    foreach(MapSourceInterface *map_source, *map_source_interfaces()) { //the foreach keyword iterates through the entire list in order
+        if (map_source->name() == name)     // if the name of a map source matches the name of the QString parameter; then return the map source
 			return map_source;
 	}
 	return 0;
@@ -209,17 +209,17 @@ MapSourceInterface *MapWidget::mapSourceFactory(const QString &name)
 
 void MapWidget::centerOn(const QPointF &coordinate)
 {
-	Q_D(MapWidget);
+    Q_D(MapWidget); //Allows you to access the variables in the MapWidget_p.h file; gives you access to the d pointer
 
     if (!d->map_source)  //If not a valid MapSourceInterface, then exit.  The three map sources inherit from MapSourceInterface, this will return true if d.map_source is one of the three map sources
 		return;
 
-	if (d->map_source->isValidCoordinate(coordinate)) {
-		d->map_center = coordinate;
+    if (d->map_source->isValidCoordinate(coordinate)) {  //Read as d.(insert map name).isValidCoordinate; the d pointer allows you to take one of the map sources and call its individual isValidCoordinate function
+        d->map_center = coordinate;   //sets the map_center variable to the QPointF paramater that is passed to the function
 		QGraphicsView::centerOn(d->map_source->displayFromCooordinate(coordinate, d->zoom_level));
 		d->requestTiles(mapToScene(viewport()->rect()));
 
-		emit mapCenterChanged(d->map_center);
+        emit mapCenterChanged(d->map_center);  //emits the mapCenterChanged signal
 	}
 }
 
@@ -235,7 +235,7 @@ void MapWidget::setZoomLevel(int zoom_level)
 	if (!d->map_source)
 		return;
 
-    if (zoom_level <= d->map_source->maxZoom() && zoom_level >= d->map_source->minZoom()) {
+    if (zoom_level <= d->map_source->maxZoom() && zoom_level >= d->map_source->minZoom()) { //Checks to see if zoom is already set to min or max
 		d->zoom_level = zoom_level;
 		d->resizeScene(viewport()->size());
 		d->tile_list.clear();
@@ -301,7 +301,7 @@ void MapWidget::mousePressEvent(QMouseEvent *event)
 
 	if (event->button() == Qt::LeftButton)
 		d->pressed = true;
-	QGraphicsView::mousePressEvent(event);
+    QGraphicsView::mousePressEvent(event);
 }
 
 void MapWidget::mouseMoveEvent(QMouseEvent *event)
@@ -353,9 +353,9 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
 	if (key == Qt::Key_PageUp || key == Qt::Key_PageDown)
 		return;
 
-	QGraphicsView::keyPressEvent(event);
+    QGraphicsView::keyPressEvent(event);
 
-	if (key >= Qt::Key_Left && key <= Qt::Key_Down) {
+    if (key >= Qt::Key_Left && key <= Qt::Key_Down) {  // checks to see if key entered is a directional key; between Key_Left (0x01000012) and Key_Down (0x01000015)
 		QRect rect = viewport()->rect();
 		d->map_center = d->map_source->coordinateFromDisplay(mapToScene(rect.center()).toPoint(), d->zoom_level);
 		d->requestTiles(mapToScene(rect));

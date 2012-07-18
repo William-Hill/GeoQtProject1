@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+
 namespace Ui {
 class ProjectWidget;
 }
@@ -15,13 +16,17 @@ public:
     explicit ProjectWidget(QWidget *parent = 0);
     ~ProjectWidget();
     void selectMapSource(const QString &name);
+    //void keyZoomEvent (QKeyEvent *event);
 
 
-    
+protected:
+    void keyZoomEvent(QKeyEvent *event);
+
 private:
     Ui::ProjectWidget *ui;
     QString mapsname;
     QStringList mapsAvailable;
+    int key;
 
 };
 
