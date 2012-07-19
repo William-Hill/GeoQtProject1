@@ -58,6 +58,7 @@ public:
 	MapSourceInterface *map_source;
 	TileProvider *tile_provider;
 	QPointF map_center;
+    QPointF screenCoordinate;
 	int zoom_level;
 	QHash<QPoint, QPixmap> tile_list;
 };

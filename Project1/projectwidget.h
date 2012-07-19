@@ -4,6 +4,7 @@
 #include <QWidget>
 
 
+
 namespace Ui {
 class ProjectWidget;
 }
@@ -16,17 +17,28 @@ public:
     explicit ProjectWidget(QWidget *parent = 0);
     ~ProjectWidget();
     void selectMapSource(const QString &name);
-    //void keyZoomEvent (QKeyEvent *event);
+
 
 
 protected:
-    void keyZoomEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    //void mouseMoveEvent(QMouseEvent *event);
+
+signals:
+    void zoomInOnKeyPress(int i);
+
+private slots:
+    void updateCoordinates(const QPointF &coordinate);
 
 private:
     Ui::ProjectWidget *ui;
     QString mapsname;
     QStringList mapsAvailable;
     int key;
+    int newZoomLevel;
+    QPointF screenCoordinate;
+   //QString coordinateText;
+
 
 };
 

@@ -318,6 +318,17 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event)
 
 		emit mapCenterChanged(d->map_center);
 	}
+
+    else
+    {
+
+    d->screenCoordinate = d->map_source->coordinateFromDisplay(event->pos(), d->zoom_level);
+    emit coordinateChange(d->screenCoordinate);
+    }
+
+
+
+
 	QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -363,6 +374,9 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
 		emit mapCenterChanged(d->map_center);
 	}
 }
+
+
+
 
 void MapWidget::setTile(const QPixmap &pixmap, int x, int y, int z)
 {

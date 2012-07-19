@@ -56,6 +56,7 @@ public slots:
 signals:
 	void mapCenterChanged(QPointF map_center);
 	void zoomLevelChanged(int zoom);
+    void coordinateChange(QPointF screenCoordinate);
 
 protected:
 	void drawBackground(QPainter *painter, const QRectF &exposed);
