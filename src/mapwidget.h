@@ -32,6 +32,7 @@ class MapWidget : public QGraphicsView
     Q_PROPERTY(QPointF mapCenter READ mapCenter WRITE centerOn NOTIFY mapCenterChanged)     //Property says to read from mapCenter, write to centerOn, and notify mapCenterChanged
 	Q_PROPERTY(int zoomLevel READ zoomLevel WRITE setZoomLevel NOTIFY zoomLevelChanged)
 
+
 public:
 	explicit MapWidget(QWidget *parent = 0);
 	~MapWidget();

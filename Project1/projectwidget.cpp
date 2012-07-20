@@ -22,7 +22,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);  //Widget to capture focus on both click and tab from the keyboard.
     setMouseTracking(true); //Enables mouse tracking without first needing to click
-    connect(ui->map_widget, SIGNAL(coordinateChange(QPointF)), SLOT(updateCoordinates(QPointF)));
+
     mapsname = "mapnik";  // Hard codes in the map to be used
     mapsAvailable = MapWidget::avaiableMapSources();  //Gets a QStringList of the available map sources stored in the mapsources project folder
 
@@ -32,6 +32,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     }
 
     selectMapSource(mapsname);  //Set the map to be displayed
+    connect(ui->map_widget, SIGNAL(coordinateChange(QPointF)), SLOT(updateCoordinates(QPointF)));  //when signal from coordinateChange is received, activate slot updateCoordinates; connect to map_widget
     //changeMapSource(mapnik);
     //MapSourceInterface *map_source = MapWidget::mapSourceFactory(mapnik);
    // ui->map_widget->setMapSource(mapnik);
@@ -42,8 +43,8 @@ void ProjectWidget::selectMapSource(const QString &name)
     map_source = MapWidget::mapSourceFactory(name);  //
     ui->map_widget->setMapSource(map_source);  //setMapSouce accepts a MapSourceInterface
     ui->map_widget->setZoomLevel(4);
-    ui->map_widget->centerOn(QPointF(64.300914, 56.2877190));
-    updateCoordinates(QPointF(64.300914, 56.2877190));
+    ui->map_widget->centerOn(QPointF(85.04543899, -179.08264160));
+    updateCoordinates(QPointF(85.04543899, -179.08264160));
 }
 
 void ProjectWidget::keyPressEvent(QKeyEvent *event)

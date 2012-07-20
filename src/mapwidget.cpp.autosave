@@ -322,7 +322,7 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event)
     else  //if the mouse hasn't been clicked
     {
 
-        d->screenCoordinate = d->map_source->coordinateFromDisplay(mapToScene(event->pos()).toPoint() , d->zoom_level);  //Gets the coordinates of the map source using the position of the mouse cursor and the zoom level
+        d->screenCoordinate = d->map_source->coordinateFromDisplay(event->pos(), d->zoom_level);  //Gets the coordinates of the map source using the position of the mouse cursor and the zoom level
     emit coordinateChange(d->screenCoordinate);     //emits the coordinateChange signal
     }
 
