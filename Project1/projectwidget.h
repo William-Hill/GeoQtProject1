@@ -20,15 +20,20 @@ public:
 
 
 
+
 protected:
     void keyPressEvent(QKeyEvent *event);
-    //void mouseMoveEvent(QMouseEvent *event);
+    //void mousePressEvent(QMouseEvent *event);
+    //void mouseReleaseEvent(QMouseEvent *event);
+
 
 signals:
     void zoomInOnKeyPress(int i);
+    void focusChange(QPointF focusCenter);
 
 private slots:
     void updateCoordinates(const QPointF &coordinate);
+    void focusOn();
 
 private:
     Ui::ProjectWidget *ui;
@@ -37,6 +42,7 @@ private:
     int key;
     int newZoomLevel;
     QPointF screenCoordinate;
+    bool isClicked;
    //QString coordinateText;
 
 

@@ -22,6 +22,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     ui->setupUi(this);
     setFocusPolicy(Qt::StrongFocus);  //Widget to capture focus on both click and tab from the keyboard.
     setMouseTracking(true); //Enables mouse tracking without first needing to click
+    isClicked = false;
 
     mapsname = "mapnik";  // Hard codes in the map to be used
     mapsAvailable = MapWidget::avaiableMapSources();  //Gets a QStringList of the available map sources stored in the mapsources project folder
@@ -33,6 +34,8 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 
     selectMapSource(mapsname);  //Set the map to be displayed
     connect(ui->map_widget, SIGNAL(coordinateChange(QPointF)), SLOT(updateCoordinates(QPointF)));  //when signal from coordinateChange is received, activate slot updateCoordinates; connect to map_widget
+    connect(ui->map_widget,SIGNAL(focusChange(QPointF)),SLOT (updateCoordinates(QPointF)));  //when signal from focusChange is emitted, then activate updateCoordinates slot
+    connect(ui->pushButton, SIGNAL(clicked()),this,SLOT(focusOn()));            //when the focus button is clicked, emit a signal to activate the focusOn slot
     //changeMapSource(mapnik);
     //MapSourceInterface *map_source = MapWidget::mapSourceFactory(mapnik);
    // ui->map_widget->setMapSource(mapnik);
@@ -43,8 +46,9 @@ void ProjectWidget::selectMapSource(const QString &name)
     map_source = MapWidget::mapSourceFactory(name);  //
     ui->map_widget->setMapSource(map_source);  //setMapSouce accepts a MapSourceInterface
     ui->map_widget->setZoomLevel(4);
-    ui->map_widget->centerOn(QPointF(85.04543899, -179.08264160));
-    updateCoordinates(QPointF(85.04543899, -179.08264160));
+    QPointF usaSouth(32.3235, -90.234);  //Not picking up correct coordinates
+    ui->map_widget->centerOn(usaSouth);
+    updateCoordinates(usaSouth);
 }
 
 void ProjectWidget::keyPressEvent(QKeyEvent *event)
@@ -75,15 +79,34 @@ void ProjectWidget::keyPressEvent(QKeyEvent *event)
     //should be able to just increment or decrement zoomLevel by 1 and emit mapCenterChanged
 }
 
-//void ProjectWidget::mouseMoveEvent(QMouseEvent *event)
+//void ProjectWidget::mousePressEvent(QMouseEvent *event)
 //{
-
-
-//    screenCoordinate = map_source->coordinateFromDisplay(event->pos(), ui->map_widget->zoomLevel());  //gets the coordinates of current map source and stores them in screenCoordinates
-//   updateCoordinates(screenCoordinate);  // calls updateCoordinates
-//   //QGraphicsView::mouseMoveEvent(event);
+//    if (event->button() == Qt::LeftButton)
+//        isClicked = true;
+//    QWidget::mousePressEvent(event); //event handler
 
 //}
+
+//void ProjectWidget::mouseReleaseEvent(QMouseEvent *event)
+//{
+//    if (event->button() == Qt::LeftButton)
+//        isClicked = false;
+//    if(ui->pushButton->clicked();)
+//}
+
+
+void ProjectWidget::focusOn()
+{
+    double setLong = ui->longEdit->text().toDouble();       //Get long coordinate from ui and convert to double
+    double setLat = ui->latEdit->text().toDouble();         //get lat coordinate from ui and convert to double
+    int setZLevel = ui->zoomEdit->text().toInt();   //Get the entered zoom level from the ui
+    QPointF focusCenter(setLong, setLat);           //Create a QPointF from the user entered doubles
+    ui->map_widget->setZoomLevel(setZLevel);        //Set zoom level to user input
+    ui->map_widget->centerOn(focusCenter);            //Center on user given coordinate
+
+    emit focusChange(focusCenter);      //emit the signal
+
+}
 
 void ProjectWidget::updateCoordinates(const QPointF &coordinate)
 {

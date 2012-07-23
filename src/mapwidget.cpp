@@ -316,13 +316,15 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event)
 		d->map_center = d->map_source->coordinateFromDisplay(mapToScene(rect.center()).toPoint(), d->zoom_level);
 		d->requestTiles(mapToScene(rect));
 
+
         emit mapCenterChanged(d->map_center);  // emit signal for mapCenterChanged
 	}
 
     else  //if the mouse hasn't been clicked
     {
+        QPoint sCoor = mapToScene(event->pos()).toPoint();  //Map the position of the mouse cursor to the screen in order to get the correct coordinates.
 
-        d->screenCoordinate = d->map_source->coordinateFromDisplay(mapToScene(event->pos()).toPoint() , d->zoom_level);  //Gets the coordinates of the map source using the position of the mouse cursor and the zoom level
+        d->screenCoordinate = d->map_source->coordinateFromDisplay(sCoor, d->zoom_level);  //Gets the coordinates of the map source using the position of the mouse cursor and the zoom level
     emit coordinateChange(d->screenCoordinate);     //emits the coordinateChange signal
     }
 
