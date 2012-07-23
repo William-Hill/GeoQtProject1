@@ -76,7 +76,22 @@ void ProjectWidget::keyPressEvent(QKeyEvent *event)
         ui->map_widget->setZoomLevel(newZoomLevel-1);       //decrements the zoom level by 1
     }
 
+
+    if (key == Qt::Key_Shift)
+    {
+        shiftMod = true;
+        //emit a signal
+    }
+
     //should be able to just increment or decrement zoomLevel by 1 and emit mapCenterChanged
+}
+
+void ProjectWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    key = event->key();
+
+    if (key == Qt::Key_Shift)
+        shiftMod = false;
 }
 
 //void ProjectWidget::mousePressEvent(QMouseEvent *event)

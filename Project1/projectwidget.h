@@ -17,6 +17,7 @@ public:
     explicit ProjectWidget(QWidget *parent = 0);
     ~ProjectWidget();
     void selectMapSource(const QString &name);
+    void modKeyZoom();
 
 
 
@@ -25,6 +26,8 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     //void mousePressEvent(QMouseEvent *event);
     //void mouseReleaseEvent(QMouseEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+    //Define a paint event
 
 
 signals:
@@ -43,6 +46,7 @@ private:
     int newZoomLevel;
     QPointF screenCoordinate;
     bool isClicked;
+    bool shiftMod;
    //QString coordinateText;
 
 
