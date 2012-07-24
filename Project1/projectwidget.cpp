@@ -34,7 +34,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
 
     selectMapSource(mapsname);  //Set the map to be displayed
     connect(ui->map_widget, SIGNAL(coordinateChange(QPointF)), SLOT(updateCoordinates(QPointF)));  //when signal from coordinateChange is received, activate slot updateCoordinates; connect to map_widget
-    connect(ui->map_widget,SIGNAL(focusChange(QPointF)),SLOT (updateCoordinates(QPointF)));  //when signal from focusChange is emitted, then activate updateCoordinates slot
+    //connect(ui->map_widget,SIGNAL(focusChange(QPointF)),SLOT (updateCoordinates(QPointF)));  //when signal from focusChange is emitted, then activate updateCoordinates slot
     connect(ui->pushButton, SIGNAL(clicked()),this,SLOT(focusOn()));            //when the focus button is clicked, emit a signal to activate the focusOn slot
     //changeMapSource(mapnik);
     //MapSourceInterface *map_source = MapWidget::mapSourceFactory(mapnik);
@@ -83,31 +83,69 @@ void ProjectWidget::keyPressEvent(QKeyEvent *event)
         //emit a signal
     }
 
+    if (key == Qt::Key_Escape)
+    {
+        shiftMod = false;
+    }
+
     //should be able to just increment or decrement zoomLevel by 1 and emit mapCenterChanged
 }
 
-void ProjectWidget::keyReleaseEvent(QKeyEvent *event)
-{
-    key = event->key();
+//void ProjectWidget::keyReleaseEvent(QKeyEvent *event)
+//{
+//    key = event->key();
 
-    if (key == Qt::Key_Shift)
-        shiftMod = false;
+//    if (key == Qt::Key_Shift)
+//        shiftMod = false;
+//}
+
+//void ProjectWidget::paintEvent(QPaintEvent *event)
+//{
+//    if (shiftMod == true)
+//    {
+//        QPainter painter(this);
+//        painter.setPen(Qt::red);
+//        painter.setFont(QFont("Arial"));
+//        painter.drawRect();
+//    }
+//}
+
+void ProjectWidget::mousePressEvent(QMouseEvent *event)
+{
+    //if (event->button() == Qt::LeftButton)
+        //isClicked = true;
+    if (shiftMod == true)
+    {
+    origin = event->pos();
+    if (!rubberband)
+        rubberband = new QRubberBand (QRubberBand::Rectangle,this);
+    rubberband->setGeometry(QRect(origin,QSize()));
+    rubberband->show();
+    QWidget::mousePressEvent(event); //event handler
+    }
+
 }
 
-//void ProjectWidget::mousePressEvent(QMouseEvent *event)
-//{
-//    if (event->button() == Qt::LeftButton)
-//        isClicked = true;
-//    QWidget::mousePressEvent(event); //event handler
+void ProjectWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if (shiftMod ==true )
+    {
+        rubberband->setGeometry(QRect(origin,event->pos()).normalized());  // normalized returns a normalized QRect
+        rubberRect = QRect(origin,event->pos()).normalized();
+    }
+}
 
-//}
+void ProjectWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    //if (event->button() == Qt::LeftButton)
+        //isClicked = false;
+    //if(ui->pushButton->clicked();)
 
-//void ProjectWidget::mouseReleaseEvent(QMouseEvent *event)
-//{
-//    if (event->button() == Qt::LeftButton)
-//        isClicked = false;
-//    if(ui->pushButton->clicked();)
-//}
+    if (shiftMod == true)
+    {
+        rubberband->hide();
+    }
+}
 
 
 void ProjectWidget::focusOn()

@@ -2,6 +2,7 @@
 #define PROJECTWIDGET_H
 
 #include <QWidget>
+#include <QRubberBand>
 
 
 
@@ -24,10 +25,12 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
-    //void mousePressEvent(QMouseEvent *event);
-    //void mouseReleaseEvent(QMouseEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    //void keyReleaseEvent(QKeyEvent *event);
     //Define a paint event
+    //void paintEvent(QPaintEvent *event);
 
 
 signals:
@@ -47,6 +50,9 @@ private:
     QPointF screenCoordinate;
     bool isClicked;
     bool shiftMod;
+    QPoint origin;
+    QRubberBand *rubberband;
+    QRect rubberRect;
    //QString coordinateText;
 
 
