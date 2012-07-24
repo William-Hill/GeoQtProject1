@@ -42,7 +42,11 @@ uint qHash(const QPoint& p)
 
 MapWidgetPrivate::MapWidgetPrivate()
 	: pressed(false), map_scene(new QGraphicsScene), map_source(NULL),
-      tile_provider(new TileProvider), map_center(QPointF(0, 0)), screenCoordinate(QPointF(0,0)), zoom_level(0)
+      tile_provider(new TileProvider), map_center(QPointF(0, 0)), screenCoordinate(QPointF(0,0)), zoom_level(0), shiftPressed(false),
+      rOrigin(QPoint(0,0)), shiftActivated(false), rubberband(NULL)
+      //rubberband(new QRubberBand)
+
+    //m ight have to add rubberRect and rubberband
 {
 }
 
@@ -297,10 +301,24 @@ void MapWidget::resizeEvent(QResizeEvent *event)
 
 void MapWidget::mousePressEvent(QMouseEvent *event)
 {
-	Q_D(MapWidget);
+    Q_D(MapWidget);
 
-	if (event->button() == Qt::LeftButton)
-		d->pressed = true;
+    if (d->shiftPressed == true && event->button() == Qt::LeftButton)    // if the shift modifier has been activated
+    {
+        d->shiftActivated = true;       // Flag for activating the shift mod key
+        d->rOrigin = event->pos();      // get the origin of the mouse click
+        if (!d->rubberband)
+            d->rubberband = new QRubberBand (QRubberBand::Rectangle,this);      // create new rubberband object
+        d->rubberband->setGeometry(QRect(d->rOrigin, QSize()));          // set the geometry of the rubberband rectangle; the top left corner will be the origin
+        d->rubberband->show();
+
+        //return;
+    }
+
+    if (event->button() == Qt::LeftButton && d->shiftPressed == false) // shift modifier must be deactivated for drag function to work
+    {
+        d->pressed = true;
+    }
     QGraphicsView::mousePressEvent(event);
 }
 
@@ -311,7 +329,20 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event)
     if (!d->map_source)     // If not a valid map souce, exit
 		return;
 
-    if (d->pressed) {       //If the left button has been clicked, respond to the drag and request tiles to redraw the map
+    if (d->shiftPressed == true && d->shiftActivated == true)    // if the shift key has been pressed and the shift mod key has been activated by a mouse click
+    {
+        if (!d->rubberband)     // if rubberband doesn't exist, create a new rubberband
+        {
+            d->rubberband = new QRubberBand (QRubberBand::Rectangle,this);
+        }
+
+           d->rubberband->setGeometry(QRect(d->rOrigin,event->pos()).normalized());    // returns a normalized (non-negative) rectangle; sets the top left corner to the origin and gets the rest of the coordinates from the QPoint returned by event->pos()
+           d->rubberRect = QRect(d->rOrigin, event->pos()).normalized();               // sets a QRect variable, rubberRect, to the normalized rectangle.  Will get the center of this rectangle
+
+    }
+
+  else  if (d->pressed == true) //If the left button has been clicked, respond to the drag and request tiles to redraw the map
+    {
 		QRect rect = viewport()->rect();
 		d->map_center = d->map_source->coordinateFromDisplay(mapToScene(rect.center()).toPoint(), d->zoom_level);
 		d->requestTiles(mapToScene(rect));
@@ -338,7 +369,20 @@ void MapWidget::mouseReleaseEvent(QMouseEvent *event)
 {
 	Q_D(MapWidget);
 
-	if (event->button() == Qt::LeftButton)
+    if (d->shiftPressed == true)
+    {
+        int newZoom = d->zoom_level+2;
+        d->zoom_level = newZoom;
+
+        d->map_center = d->map_source->coordinateFromDisplay(mapToScene(d->rubberRect.center()).toPoint(), d->zoom_level);
+        d->requestTiles(mapToScene(d->rubberRect));
+        d->rubberband->hide();
+        //d->rubberband->setVisible(false);
+        d->rubberband = NULL;
+        //delete d->rubberband;
+    }
+
+    if (event->button() == Qt::LeftButton && d->pressed == true)
         d->pressed = false;
 	QGraphicsView::mouseReleaseEvent(event);
 }
@@ -368,13 +412,25 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
 
     QGraphicsView::keyPressEvent(event);
 
-    if (key >= Qt::Key_Left && key <= Qt::Key_Down) {  // checks to see if key entered is a directional key; between Key_Left (0x01000012) and Key_Down (0x01000015)
+    if (key >= Qt::Key_Left && key <= Qt::Key_Down) // checks to see if key entered is a directional key; between Key_Left (0x01000012) and Key_Down (0x01000015)
+    {
 		QRect rect = viewport()->rect();
 		d->map_center = d->map_source->coordinateFromDisplay(mapToScene(rect.center()).toPoint(), d->zoom_level);
 		d->requestTiles(mapToScene(rect));
 
 		emit mapCenterChanged(d->map_center);
 	}
+
+    if (key == Qt::Key_Shift)
+    {
+        d->shiftPressed = true;
+
+    }
+
+    if (key == Qt::Key_Escape)
+    {
+        d->shiftPressed = false;
+    }
 }
 
 

@@ -77,16 +77,16 @@ void ProjectWidget::keyPressEvent(QKeyEvent *event)
     }
 
 
-    if (key == Qt::Key_Shift)
-    {
-        shiftMod = true;
-        //emit a signal
-    }
+//    if (key == Qt::Key_Shift)
+//    {
+//        shiftMod = true;
+//        //emit a signal
+//    }
 
-    if (key == Qt::Key_Escape)
-    {
-        shiftMod = false;
-    }
+//    if (key == Qt::Key_Escape)
+//    {
+//        shiftMod = false;
+//    }
 
     //should be able to just increment or decrement zoomLevel by 1 and emit mapCenterChanged
 }
@@ -110,42 +110,42 @@ void ProjectWidget::keyPressEvent(QKeyEvent *event)
 //    }
 //}
 
-void ProjectWidget::mousePressEvent(QMouseEvent *event)
-{
-    //if (event->button() == Qt::LeftButton)
-        //isClicked = true;
-    if (shiftMod == true)
-    {
-    origin = event->pos();
-    if (!rubberband)
-        rubberband = new QRubberBand (QRubberBand::Rectangle,this);
-    rubberband->setGeometry(QRect(origin,QSize()));
-    rubberband->show();
-    QWidget::mousePressEvent(event); //event handler
-    }
+//void ProjectWidget::mousePressEvent(QMouseEvent *event)
+//{
+//    //if (event->button() == Qt::LeftButton)
+//        //isClicked = true;
+//    if (shiftMod == true)
+//    {
+//    origin = event->pos();
+//    if (!rubberband)
+//        rubberband = new QRubberBand (QRubberBand::Rectangle,this);
+//    rubberband->setGeometry(QRect(origin,QSize()));
+//    rubberband->show();
+//    QWidget::mousePressEvent(event); //event handler
+//    }
 
-}
+//}
 
-void ProjectWidget::mouseMoveEvent(QMouseEvent *event)
-{
-    if (shiftMod ==true )
-    {
-        rubberband->setGeometry(QRect(origin,event->pos()).normalized());  // normalized returns a normalized QRect
-        rubberRect = QRect(origin,event->pos()).normalized();
-    }
-}
+//void ProjectWidget::mouseMoveEvent(QMouseEvent *event)
+//{
+//    if (shiftMod ==true )
+//    {
+//        rubberband->setGeometry(QRect(origin,event->pos()).normalized());  // normalized returns a normalized QRect
+//        rubberRect = QRect(origin,event->pos()).normalized();
+//    }
+//}
 
-void ProjectWidget::mouseReleaseEvent(QMouseEvent *event)
-{
-    //if (event->button() == Qt::LeftButton)
-        //isClicked = false;
-    //if(ui->pushButton->clicked();)
+//void ProjectWidget::mouseReleaseEvent(QMouseEvent *event)
+//{
+//    //if (event->button() == Qt::LeftButton)
+//        //isClicked = false;
+//    //if(ui->pushButton->clicked();)
 
-    if (shiftMod == true)
-    {
-        rubberband->hide();
-    }
-}
+//    if (shiftMod == true)
+//    {
+//        rubberband->hide();
+//    }
+//}
 
 
 void ProjectWidget::focusOn()

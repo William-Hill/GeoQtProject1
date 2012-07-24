@@ -29,6 +29,7 @@
 //
 
 #include <QtCore/QHash>
+#include <QRubberBand>
 
 class QPointF;
 class QPoint;
@@ -36,6 +37,8 @@ class QPolygonF;
 class QSize;
 class QPixmap;
 class QGraphicsScene;
+class QRubberBand;
+class QRect;
 
 namespace GeoQt {
 
@@ -60,6 +63,11 @@ public:
 	QPointF map_center;
     QPointF screenCoordinate;
 	int zoom_level;
+    bool shiftPressed;
+    QPoint rOrigin;
+    QRubberBand *rubberband;
+    QRect rubberRect;
+    bool shiftActivated;
 	QHash<QPoint, QPixmap> tile_list;
 };
 }

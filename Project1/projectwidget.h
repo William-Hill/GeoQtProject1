@@ -25,9 +25,9 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+    //void mousePressEvent(QMouseEvent *event);
+    //void mouseMoveEvent(QMouseEvent *event);
+    //void mouseReleaseEvent(QMouseEvent *event);
     //void keyReleaseEvent(QKeyEvent *event);
     //Define a paint event
     //void paintEvent(QPaintEvent *event);
