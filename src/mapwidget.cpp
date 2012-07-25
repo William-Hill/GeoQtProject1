@@ -43,7 +43,7 @@ uint qHash(const QPoint& p)
 MapWidgetPrivate::MapWidgetPrivate()
 	: pressed(false), map_scene(new QGraphicsScene), map_source(NULL),
       tile_provider(new TileProvider), map_center(QPointF(0, 0)), screenCoordinate(QPointF(0,0)), zoom_level(0), shiftPressed(false),
-      rOrigin(QPoint(0,0)), shiftActivated(false), rubberband(NULL)
+      rOrigin(QPoint(0,0)), shiftActivated(false), rubberband(NULL), rubberLine(NULL), trace(false), traceActivated(false)
       //rubberband(new QRubberBand)
 
     //m ight have to add rubberRect and rubberband
@@ -125,7 +125,7 @@ MapWidget::~MapWidget()
 	delete d_ptr;
 }
 
-QPointF MapWidget::mapCenter() const
+QPointF MapWidget::mapCenter() const        //returns the center of the map
 {
 	Q_D(const MapWidget);
 
@@ -315,6 +315,15 @@ void MapWidget::mousePressEvent(QMouseEvent *event)
         //return;
     }
 
+    if (d->trace == true && event->button() == Qt::LeftButton)
+    {
+        d->traceActivated = true;
+        d->rOrigin = event->pos();
+        if (!d->rubberLine)
+            d->rubberLine = new QRubberBand(QRubberBand::Line,this);
+        //d->rubberLine->setGeometry();
+    }
+
     if (event->button() == Qt::LeftButton && d->shiftPressed == false) // shift modifier must be deactivated for drag function to work
     {
         d->pressed = true;
@@ -338,7 +347,7 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event)
 
            d->rubberband->setGeometry(QRect(d->rOrigin,event->pos()).normalized());    // returns a normalized (non-negative) rectangle; sets the top left corner to the origin and gets the rest of the coordinates from the QPoint returned by event->pos()
            d->rubberRect = QRect(d->rOrigin, event->pos()).normalized();               // sets a QRect variable, rubberRect, to the normalized rectangle.  Will get the center of this rectangle
-
+return;
     }
 
   else  if (d->pressed == true) //If the left button has been clicked, respond to the drag and request tiles to redraw the map
@@ -373,6 +382,7 @@ void MapWidget::mouseReleaseEvent(QMouseEvent *event)
     {
         int newZoom = d->zoom_level+2;
         d->zoom_level = newZoom;
+        //might have to call centerOn instead of doing the following line
 
         d->map_center = d->map_source->coordinateFromDisplay(mapToScene(d->rubberRect.center()).toPoint(), d->zoom_level);
         d->requestTiles(mapToScene(d->rubberRect));
@@ -423,12 +433,20 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
 
     if (key == Qt::Key_Shift)
     {
-        d->shiftPressed = true;
+        d->shiftPressed = true;     // says that shift was pressed
+        d->trace = false;           // deactivates tracing
 
     }
 
-    if (key == Qt::Key_Escape)
+    if (key == Qt::Key_Escape)      // deactivates mod key zoom and tracing
     {
+        d->shiftPressed = false;
+        d->trace = false;
+    }
+
+    if (key == Qt::Key_Control)     // enables tracing; disables mod key zoom
+    {
+        d->trace = true;
         d->shiftPressed = false;
     }
 }

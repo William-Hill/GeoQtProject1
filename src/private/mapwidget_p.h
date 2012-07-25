@@ -69,6 +69,9 @@ public:
     QRect rubberRect;
     bool shiftActivated;
 	QHash<QPoint, QPixmap> tile_list;
+    QRubberBand *rubberLine;
+    bool trace;
+    bool traceActivated;
 };
 }
 #endif // MAPWIDGET_P_H
