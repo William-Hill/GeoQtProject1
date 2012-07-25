@@ -331,6 +331,7 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event)
 
     if (d->shiftPressed == true && d->shiftActivated == true)    // if the shift key has been pressed and the shift mod key has been activated by a mouse click
     {
+        this->setDragMode(NoDrag);  // Keeps the map from dragging when mod key zoom is used
         if (!d->rubberband)     // if rubberband doesn't exist, create a new rubberband
         {
             d->rubberband = new QRubberBand (QRubberBand::Rectangle,this);
@@ -371,11 +372,13 @@ void MapWidget::mouseReleaseEvent(QMouseEvent *event)
 
     if (d->shiftPressed == true)
     {
-        int newZoom = d->zoom_level+2;
-        d->zoom_level = newZoom;
+        //int newZoom = d->zoom_level+2;
+        //d->zoom_level = newZoom;
+        setZoomLevel(d->zoom_level+1);  // Got proper zooming
 
         d->map_center = d->map_source->coordinateFromDisplay(mapToScene(d->rubberRect.center()).toPoint(), d->zoom_level);
-        d->requestTiles(mapToScene(d->rubberRect));
+        //d->requestTiles(mapToScene(d->rubberRect));
+        centerOn(d->map_center);        // Got proper centering
         d->rubberband->hide();
         //d->rubberband->setVisible(false);
         d->rubberband = NULL;
@@ -389,7 +392,7 @@ void MapWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void MapWidget::wheelEvent(QWheelEvent *event)
 {
-	Q_D(MapWidget);
+    Q_D(MapWidget);
 	
 	int num_degrees = event->delta() / 8;
 	int num_steps = num_degrees / 15;
@@ -430,6 +433,7 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
     if (key == Qt::Key_Escape)
     {
         d->shiftPressed = false;
+        this->setDragMode(ScrollHandDrag);          // Sets drag mode back to scrolling
     }
 }
 

@@ -23,6 +23,7 @@ ProjectWidget::ProjectWidget(QWidget *parent) :
     setFocusPolicy(Qt::StrongFocus);  //Widget to capture focus on both click and tab from the keyboard.
     setMouseTracking(true); //Enables mouse tracking without first needing to click
     isClicked = false;
+    ui->modeLabel->setText("");
 
     mapsname = "mapnik";  // Hard codes in the map to be used
     mapsAvailable = MapWidget::avaiableMapSources();  //Gets a QStringList of the available map sources stored in the mapsources project folder
@@ -46,6 +47,8 @@ void ProjectWidget::selectMapSource(const QString &name)
     map_source = MapWidget::mapSourceFactory(name);  //
     ui->map_widget->setMapSource(map_source);  //setMapSouce accepts a MapSourceInterface
     ui->map_widget->setZoomLevel(4);
+    newZoomLevel = ui->map_widget->zoomLevel();     //gets the current zoom level of the widget
+    ui->currentZoom->setText(zNumber.setNum(newZoomLevel));
     QPointF usaSouth(32.3235, -90.234);  //Not picking up correct coordinates
     ui->map_widget->centerOn(usaSouth);
     updateCoordinates(usaSouth);
@@ -68,25 +71,27 @@ void ProjectWidget::keyPressEvent(QKeyEvent *event)
         int zoomPlus = 1;
         newZoomLevel = ui->map_widget->zoomLevel();     //gets the current zoom level of the widget
         ui->map_widget->setZoomLevel(newZoomLevel+1);       //increments the zoom level by 1
+        ui->currentZoom->setText(zNumber.setNum(newZoomLevel));
     }
 
     if (key ==Qt::Key_Minus || key == Qt::Key_Less)    //if the key entered is a minus sign key
     {
         newZoomLevel = ui->map_widget->zoomLevel();         //gets the current zoom level of the widget
         ui->map_widget->setZoomLevel(newZoomLevel-1);       //decrements the zoom level by 1
+        ui->currentZoom->setText(zNumber.setNum(newZoomLevel));
     }
 
 
-//    if (key == Qt::Key_Shift)
-//    {
-//        shiftMod = true;
-//        //emit a signal
-//    }
+    if (key == Qt::Key_Shift)
+    {
+        ui->modeLabel->setText("Select Zoom Enabled");      // Notifier that select zoom is enabled
+        //emit a signal
+    }
 
-//    if (key == Qt::Key_Escape)
-//    {
-//        shiftMod = false;
-//    }
+    if (key == Qt::Key_Escape)
+    {
+        ui->modeLabel->setText("");                         // Removes select zoom notifier
+    }
 
     //should be able to just increment or decrement zoomLevel by 1 and emit mapCenterChanged
 }

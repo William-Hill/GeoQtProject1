@@ -53,6 +53,7 @@ private:
     QPoint origin;
     QRubberBand *rubberband;
     QRect rubberRect;
+    QString zNumber;
    //QString coordinateText;
 
 
