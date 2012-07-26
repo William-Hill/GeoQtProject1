@@ -68,6 +68,10 @@ public:
     QRubberBand *rubberband;
     QRect rubberRect;
     bool shiftActivated;
+    QPainterPath *tracePath;
+    bool tracePressed;
+    bool traceActivated;
+    QPainter *paintPath;
 	QHash<QPoint, QPixmap> tile_list;
 };
 }

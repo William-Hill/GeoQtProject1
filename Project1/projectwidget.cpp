@@ -93,6 +93,11 @@ void ProjectWidget::keyPressEvent(QKeyEvent *event)
         ui->modeLabel->setText("");                         // Removes select zoom notifier
     }
 
+    if (key == Qt::Key_Control)
+    {
+        ui->modeLabel->setText("Trace Mode Enabled");
+    }
+
     //should be able to just increment or decrement zoomLevel by 1 and emit mapCenterChanged
 }
 
