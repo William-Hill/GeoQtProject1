@@ -322,10 +322,10 @@ void MapWidget::mousePressEvent(QMouseEvent *event)
             d->tracePath = new QPainterPath();
         }
 
-        if (!d->paintPath)
-        {
-            d->paintPath = new QPainter();
-        }
+//        if (!d->paintPath)
+//        {
+//            d->paintPath = new QPainter();
+//        }
         d->traceActivated = true;
         d->tracePath->moveTo(event->posF());       //Start tracing path at the point of the mouse click
     }
@@ -362,15 +362,19 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event)
         this->setDragMode(NoDrag);      // set dragging to no drag
         if (!d->tracePath)      // if no Painterpath has been created, call constructor
         {
-            d->tracePath = new QPainterPath();
+
+          d->tracePath = new QPainterPath();
+
         }
-        if (!d->paintPath)      // if no Painter has been created, call constructor
-        {
-            d->paintPath = new QPainter();
-        }
+//        if (!d->paintPath)      // if no Painter has been created, call constructor
+//        {
+//            d->paintPath = new QPainter();
+//        }
             //QPainterPath newPath = d->tracePath;
             d->tracePath->lineTo(event->posF());        // draw a line according to mouse move event
-            d->paintPath->drawPath(*(d->tracePath));       // draw the path
+            this->update();
+            //d->paintPath->begin(this);
+            //d->paintPath->drawPath(*(d->tracePath));       // draw the path
     }
 
   else  if (d->pressed == true) //If the left button has been clicked, respond to the drag and request tiles to redraw the map
@@ -426,6 +430,26 @@ void MapWidget::mouseReleaseEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton && d->pressed == true)
         d->pressed = false;
 	QGraphicsView::mouseReleaseEvent(event);
+}
+
+void MapWidget::paintEvent(QPaintEvent *event)
+{
+    Q_D(MapWidget);
+
+    if(d->tracePressed == true && d->traceActivated == true)
+    {
+        if (!d->paintPath)      // if no Painter has been created, call constructor
+        {
+            d->paintPath = new QPainter();
+        }
+
+    //d->paintPath->begin(this);
+    d->paintPath->drawPath(*(d->tracePath));       // draw the path
+    //this->update();
+
+    }
+
+    QGraphicsView::paintEvent(event);
 }
 
 void MapWidget::wheelEvent(QWheelEvent *event)
