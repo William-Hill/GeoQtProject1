@@ -43,7 +43,7 @@ uint qHash(const QPoint& p)
 MapWidgetPrivate::MapWidgetPrivate()
 	: pressed(false), map_scene(new QGraphicsScene), map_source(NULL),
       tile_provider(new TileProvider), map_center(QPointF(0, 0)), screenCoordinate(QPointF(0,0)), zoom_level(0), shiftPressed(false),
-      rOrigin(QPoint(0,0)), shiftActivated(false), rubberband(NULL), tracePressed(false), traceActivated(false), tracePath (new QPainterPath), paintPath (new QPainter)
+      rOrigin(QPoint(0,0)), shiftActivated(false), rubberband(NULL)
       //rubberband(new QRubberBand)
 
     //m ight have to add rubberRect and rubberband
@@ -303,7 +303,7 @@ void MapWidget::mousePressEvent(QMouseEvent *event)
 {
     Q_D(MapWidget);
 
-    if (d->shiftPressed == true && event->button() == Qt::LeftButton && d->tracePressed == false)    // if the shift modifier has been activated
+    if (d->shiftPressed == true && event->button() == Qt::LeftButton)    // if the shift modifier has been activated
     {
         d->shiftActivated = true;       // Flag for activating the shift mod key
         d->rOrigin = event->pos();      // get the origin of the mouse click
@@ -315,22 +315,7 @@ void MapWidget::mousePressEvent(QMouseEvent *event)
         //return;
     }
 
-    if (d->tracePressed == true && event->button() == Qt::LeftButton && d->shiftPressed == false)  // activate tracing if mouse is clicked after tracing was enabled
-    {
-        if (!d->tracePath)
-        {
-            d->tracePath = new QPainterPath();
-        }
-
-        if (!d->paintPath)
-        {
-            d->paintPath = new QPainter();
-        }
-        d->traceActivated = true;
-        d->tracePath->moveTo(event->posF());       //Start tracing path at the point of the mouse click
-    }
-
-    if (event->button() == Qt::LeftButton && d->shiftPressed == false && d->tracePressed == false) // shift modifier must be deactivated for drag function to work
+    if (event->button() == Qt::LeftButton && d->shiftPressed == false) // shift modifier must be deactivated for drag function to work
     {
         d->pressed = true;
     }
@@ -357,28 +342,10 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event)
 
     }
 
-    if (d->tracePressed == true && d->traceActivated == true)
-    {
-        this->setDragMode(NoDrag);      // set dragging to no drag
-        if (!d->tracePath)      // if no Painterpath has been created, call constructor
-        {
-            d->tracePath = new QPainterPath();
-        }
-        if (!d->paintPath)      // if no Painter has been created, call constructor
-        {
-            d->paintPath = new QPainter();
-        }
-            //QPainterPath newPath = d->tracePath;
-            d->tracePath->lineTo(event->posF());        // draw a line according to mouse move event
-            d->paintPath->drawPath(*(d->tracePath));       // draw the path
-    }
-
   else  if (d->pressed == true) //If the left button has been clicked, respond to the drag and request tiles to redraw the map
     {
 		QRect rect = viewport()->rect();
 		d->map_center = d->map_source->coordinateFromDisplay(mapToScene(rect.center()).toPoint(), d->zoom_level);
-        d->screenCoordinate = d->map_center;
-        emit coordinateChange(d->screenCoordinate);     // emits the coordinate of the center of the map on a drag event
 		d->requestTiles(mapToScene(rect));
 
 
@@ -416,11 +383,6 @@ void MapWidget::mouseReleaseEvent(QMouseEvent *event)
         //d->rubberband->setVisible(false);
         d->rubberband = NULL;
         //delete d->rubberband;
-    }
-
-    if (d->tracePressed == true)
-    {
-        d->tracePath->closeSubpath();       //end the drawing
     }
 
     if (event->button() == Qt::LeftButton && d->pressed == true)
@@ -468,16 +430,10 @@ void MapWidget::keyPressEvent(QKeyEvent *event)
 
     }
 
-    if (key == Qt::Key_Control)
-    {
-        d->tracePressed = true;
-    }
-
     if (key == Qt::Key_Escape)
     {
         d->shiftPressed = false;
         this->setDragMode(ScrollHandDrag);          // Sets drag mode back to scrolling
-        d->tracePressed = false;
     }
 }
 
