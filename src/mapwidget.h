@@ -69,7 +69,6 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event);
 	void wheelEvent(QWheelEvent *event);
 	void keyPressEvent(QKeyEvent *event);
-    void paintEvent(QPaintEvent *event);
 
 private slots:
 	void setTile(const QPixmap &pixmap, int x, int y, int z);
